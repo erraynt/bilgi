@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Camera, Upload, Loader2, CheckCircle } from 'lucide-react';
+import { Camera, Upload, Loader2, CheckCircle, Plus } from 'lucide-react';
 import { analyzeFoodImage } from '../services/calorieApi';
 
-const ImageUploader = () => {
+const ImageUploader = ({ onAddToLog }) => {
   const [image, setImage] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState(null);
+  const [amount, setAmount] = useState(100);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -25,6 +26,13 @@ const ImageUploader = () => {
       console.error('Analysis failed:', error);
     } finally {
       setAnalyzing(false);
+    }
+  };
+
+  const handleAdd = () => {
+    if (result && result.data) {
+      onAddToLog(result.data, amount);
+      alert(`${result.data.name} günlüğe eklendi!`);
     }
   };
 
@@ -83,7 +91,7 @@ const ImageUploader = () => {
           <p className="text-lg mb-4 text-gray-700">
             Tespit edilen yemek: <span className="font-bold text-blue-800">{result.data.name}</span> (%{result.confidence} doğruluk)
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
             <div className="bg-white p-3 rounded shadow">
               <span className="block text-xl font-bold text-green-600">{result.data.calories}</span>
               <span className="text-xs text-gray-500 uppercase">Kalori</span>
@@ -100,6 +108,27 @@ const ImageUploader = () => {
               <span className="block text-xl font-bold text-red-600">{result.data.fat}g</span>
               <span className="text-xs text-gray-500 uppercase">Yağ</span>
             </div>
+          </div>
+
+          <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+            <div className="flex items-center space-x-2">
+              <label htmlFor="log-amount" className="text-gray-600">Miktar:</label>
+              <input
+                id="log-amount"
+                type="number"
+                className="w-20 p-2 border border-blue-300 rounded"
+                value={amount}
+                onChange={(e) => setAmount(Number(e.target.value))}
+              />
+              <span className="text-gray-500">g</span>
+            </div>
+            <button
+              onClick={handleAdd}
+              className="flex items-center bg-blue-600 text-white px-8 py-2 rounded-full font-bold hover:bg-blue-700 shadow-md"
+            >
+              <Plus size={20} className="mr-1" />
+              Günlüğe Ekle
+            </button>
           </div>
         </div>
       )}

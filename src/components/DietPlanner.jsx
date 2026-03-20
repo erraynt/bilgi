@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { calculateBMR, calculateTDEE, getNutrientGoals } from '../utils/dietUtils';
 import { User, Activity, Target } from 'lucide-react';
 
-const DietPlanner = () => {
+const DietPlanner = ({ onUpdateGoals, currentGoals }) => {
   const [formData, setFormData] = useState({
     weight: 70,
     height: 175,
@@ -11,7 +11,6 @@ const DietPlanner = () => {
     activityLevel: 'sedentary',
     goal: 'maintain',
   });
-  const [results, setResults] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,7 +27,7 @@ const DietPlanner = () => {
     );
     const tdee = calculateTDEE(bmr, formData.activityLevel);
     const goals = getNutrientGoals(tdee, formData.goal);
-    setResults({ bmr, tdee, goals });
+    onUpdateGoals(goals);
   };
 
   return (
@@ -118,29 +117,29 @@ const DietPlanner = () => {
             type="submit"
             className="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition duration-300"
           >
-            Programı Hesapla
+            Programı Hesapla ve Kaydet
           </button>
         </div>
       </form>
 
-      {results && (
+      {currentGoals && (
         <div className="mt-8 p-6 bg-green-50 rounded-lg border border-green-200">
-          <h3 className="text-xl font-bold text-green-800 mb-4 text-center">Günlük İhtiyacınız</h3>
+          <h3 className="text-xl font-bold text-green-800 mb-4 text-center">Günlük Hedefiniz</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div className="bg-white p-4 rounded shadow">
-              <span className="block text-2xl font-bold text-green-600">{results.goals.targetCalories}</span>
+              <span className="block text-2xl font-bold text-green-600">{currentGoals.targetCalories}</span>
               <span className="text-sm text-gray-500 uppercase">Kalori</span>
             </div>
             <div className="bg-white p-4 rounded shadow">
-              <span className="block text-2xl font-bold text-blue-600">{results.goals.protein}g</span>
+              <span className="block text-2xl font-bold text-blue-600">{currentGoals.protein}g</span>
               <span className="text-sm text-gray-500 uppercase">Protein</span>
             </div>
             <div className="bg-white p-4 rounded shadow">
-              <span className="block text-2xl font-bold text-yellow-600">{results.goals.carbs}g</span>
+              <span className="block text-2xl font-bold text-yellow-600">{currentGoals.carbs}g</span>
               <span className="text-sm text-gray-500 uppercase">Karbonhidrat</span>
             </div>
             <div className="bg-white p-4 rounded shadow">
-              <span className="block text-2xl font-bold text-red-600">{results.goals.fat}g</span>
+              <span className="block text-2xl font-bold text-red-600">{currentGoals.fat}g</span>
               <span className="text-sm text-gray-500 uppercase">Yağ</span>
             </div>
           </div>
