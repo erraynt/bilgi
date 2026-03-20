@@ -19,6 +19,11 @@ function App() {
     return saved ? JSON.parse(saved) : null;
   });
 
+  const [waterIntake, setWaterIntake] = useState(() => {
+    const saved = localStorage.getItem('waterIntake');
+    return saved ? Number(saved) : 0;
+  });
+
   // Persist to localStorage
   useEffect(() => {
     localStorage.setItem('dailyLog', JSON.stringify(dailyLog));
@@ -27,6 +32,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem('userGoals', JSON.stringify(userGoals));
   }, [userGoals]);
+
+  useEffect(() => {
+    localStorage.setItem('waterIntake', waterIntake.toString());
+  }, [waterIntake]);
 
   const addToLog = (foodItem, grams) => {
     const newItem = {
@@ -48,6 +57,10 @@ function App() {
 
   const updateGoals = (goals) => {
     setUserGoals(goals);
+  };
+
+  const updateWater = (amount) => {
+    setWaterIntake(prev => Math.max(0, prev + amount));
   };
 
   return (
@@ -104,7 +117,7 @@ function App() {
       {/* Main Content */}
       <main className="container mx-auto py-10 px-4">
         {activeTab === 'planner' && <DietPlanner onUpdateGoals={updateGoals} currentGoals={userGoals} />}
-        {activeTab === 'log' && <DailyLog log={dailyLog} goals={userGoals} onRemove={removeFromLog} />}
+        {activeTab === 'log' && <DailyLog log={dailyLog} goals={userGoals} onRemove={removeFromLog} water={waterIntake} onUpdateWater={updateWater} />}
         {activeTab === 'scanner' && <ImageUploader onAddToLog={addToLog} />}
         {activeTab === 'menu' && <NutritionMenu onAddToLog={addToLog} />}
       </main>

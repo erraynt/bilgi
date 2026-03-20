@@ -1,7 +1,8 @@
 import React from 'react';
 import { Trash2, AlertCircle } from 'lucide-react';
+import WaterTracker from './WaterTracker';
 
-const DailyLog = ({ log, goals, onRemove }) => {
+const DailyLog = ({ log, goals, onRemove, water, onUpdateWater }) => {
   const totals = log.reduce(
     (acc, item) => ({
       calories: acc.calories + item.calories,
@@ -46,7 +47,7 @@ const DailyLog = ({ log, goals, onRemove }) => {
                 {totals.calories} / {goals?.targetCalories || 0} kcal
               </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-4">
+            <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
               <div
                 className={`h-4 rounded-full transition-all duration-500 ${getBarColor(totals.calories, goals?.targetCalories)}`}
                 style={{ width: `${getPercentage(totals.calories, goals?.targetCalories)}%` }}
@@ -59,7 +60,7 @@ const DailyLog = ({ log, goals, onRemove }) => {
                 {totals.protein} / {goals?.protein || 0}g
               </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-4">
+            <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
               <div
                 className="bg-blue-500 h-4 rounded-full transition-all duration-500"
                 style={{ width: `${getPercentage(totals.protein, goals?.protein)}%` }}
@@ -74,7 +75,7 @@ const DailyLog = ({ log, goals, onRemove }) => {
                 {totals.carbs} / {goals?.carbs || 0}g
               </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-4">
+            <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
               <div
                 className="bg-yellow-500 h-4 rounded-full transition-all duration-500"
                 style={{ width: `${getPercentage(totals.carbs, goals?.carbs)}%` }}
@@ -87,7 +88,7 @@ const DailyLog = ({ log, goals, onRemove }) => {
                 {totals.fat} / {goals?.fat || 0}g
               </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-4">
+            <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
               <div
                 className="bg-red-500 h-4 rounded-full transition-all duration-500"
                 style={{ width: `${getPercentage(totals.fat, goals?.fat)}%` }}
@@ -96,6 +97,9 @@ const DailyLog = ({ log, goals, onRemove }) => {
           </div>
         </div>
       </div>
+
+      {/* Water Tracking Component */}
+      <WaterTracker amount={water} onUpdate={onUpdateWater} />
 
       {/* Log List */}
       <div className="bg-white p-6 rounded-lg shadow-md">
